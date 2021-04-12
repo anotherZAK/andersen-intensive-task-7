@@ -156,6 +156,8 @@ var _clearAll = new WeakSet();
 
 var _clearAfterCalculate = new WeakSet();
 
+var _formatResult = new WeakSet();
+
 var _backspaceOperatorHandler = new WeakSet();
 
 var _dotOperatorHandler = new WeakSet();
@@ -211,6 +213,8 @@ var Calculator = /*#__PURE__*/function () {
     _dotOperatorHandler.add(this);
 
     _backspaceOperatorHandler.add(this);
+
+    _formatResult.add(this);
 
     _clearAfterCalculate.add(this);
 
@@ -314,8 +318,6 @@ var Calculator = /*#__PURE__*/function () {
     _classPrivateFieldSet(this, _inputDataPow, 0);
 
     _classPrivateFieldSet(this, _containerCalculator, document.querySelector('.container--calculator'));
-
-    _classPrivateFieldSet(this, _CalculatorComponent, new _view_calculator_template_js__WEBPACK_IMPORTED_MODULE_0__["CalculatorView"]());
   }
 
   _createClass(Calculator, [{
@@ -323,16 +325,18 @@ var Calculator = /*#__PURE__*/function () {
     value: function init() {
       _classPrivateFieldGet(this, _containerCalculator).append(Object(_view_calculator_template_js__WEBPACK_IMPORTED_MODULE_0__["createElement"])(Object(_view_calculator_template_js__WEBPACK_IMPORTED_MODULE_0__["calculatorTemplate"])()));
 
-      this.display = document.querySelector('.calculator__display');
-      this.calculatorButtons = document.querySelector('.calculator__buttons');
-      this.display.textContent = '0';
+      _classPrivateFieldSet(this, _display, document.querySelector('.calculator__display'));
+
+      _classPrivateFieldSet(this, _calculatorButtons, document.querySelector('.calculator__buttons'));
+
+      _classPrivateFieldGet(this, _display).textContent = '0';
     }
   }, {
     key: "start",
     value: function start() {
       var _this = this;
 
-      this.calculatorButtons.addEventListener('click', function (evt) {
+      _classPrivateFieldGet(this, _calculatorButtons).addEventListener('click', function (evt) {
         evt.preventDefault();
 
         if (evt.target.classList.contains('calculator__button--number')) {
@@ -353,7 +357,7 @@ var Calculator = /*#__PURE__*/function () {
           _classPrivateMethodGet(_this, _backspaceOperatorHandler, _backspaceOperatorHandler2).call(_this, evt);
         } else if (evt.target.classList.contains('calculator__button--power2')) {
           _classPrivateMethodGet(_this, _powerOperatorHandler, _powerOperatorHandler2).call(_this);
-        } else if (evt.target.classList.contains('calculator__button--#calculate')) {
+        } else if (evt.target.classList.contains('calculator__button--calculate')) {
           _classPrivateMethodGet(_this, _calculate, _calculate2).call(_this);
         }
       });
@@ -372,7 +376,7 @@ function _clearAll2() {
 
   _classPrivateFieldSet(this, _calculationRezult, 0);
 
-  this.display.textContent = '0';
+  _classPrivateFieldGet(this, _display).textContent = '0';
 }
 
 function _clearAfterCalculate2() {
@@ -393,6 +397,18 @@ function _clearAfterCalculate2() {
   _classPrivateFieldSet(this, _inputDataPow, 0);
 }
 
+function _formatResult2(result) {
+  if (result > 1e12) {
+    _classPrivateFieldGet(this, _display).textContent = 'Too match!';
+
+    _classPrivateMethodGet(this, _clearAfterCalculate, _clearAfterCalculate2).call(this);
+  } else if (Number.isInteger(result)) {
+    _classPrivateFieldGet(this, _display).textContent = result;
+  } else {
+    _classPrivateFieldGet(this, _display).textContent = result.toFixed(8);
+  }
+}
+
 function _backspaceOperatorHandler2() {
   _classPrivateFieldSet(this, _inputData, _classPrivateFieldGet(this, _inputData).split(''));
 
@@ -401,9 +417,9 @@ function _backspaceOperatorHandler2() {
   _classPrivateFieldSet(this, _inputData, _classPrivateFieldGet(this, _inputData).join(''));
 
   if (_classPrivateFieldGet(this, _inputData).length === 0) {
-    this.display.textContent = '0';
+    _classPrivateFieldGet(this, _display).textContent = '0';
   } else {
-    this.display.textContent = _classPrivateFieldGet(this, _inputData);
+    _classPrivateFieldGet(this, _display).textContent = _classPrivateFieldGet(this, _inputData);
   }
 
   console.log(_classPrivateFieldGet(this, _inputData));
@@ -412,7 +428,7 @@ function _backspaceOperatorHandler2() {
 function _dotOperatorHandler2(input) {
   _classPrivateFieldSet(this, _inputData, _classPrivateFieldGet(this, _inputData) + input.target.textContent);
 
-  this.display.textContent = _classPrivateFieldGet(this, _inputData);
+  _classPrivateFieldGet(this, _display).textContent = _classPrivateFieldGet(this, _inputData);
   console.log(_classPrivateFieldGet(this, _inputData));
 }
 
@@ -435,7 +451,7 @@ function _powerOperatorHandler2() {
     console.log(2);
   }
 
-  this.display.textContent = _classPrivateFieldGet(this, _inputDataPow);
+  _classPrivateFieldGet(this, _display).textContent = _classPrivateFieldGet(this, _inputDataPow);
   console.log(_classPrivateFieldGet(this, _inputDataPow));
   console.log(_classPrivateFieldGet(this, _inputDataArray));
 
@@ -449,7 +465,7 @@ function _numbersInputHandler2(input) {
 
   _classPrivateFieldSet(this, _inputData, _classPrivateFieldGet(this, _inputData) + input.target.textContent);
 
-  this.display.textContent = _classPrivateFieldGet(this, _inputData);
+  _classPrivateFieldGet(this, _display).textContent = _classPrivateFieldGet(this, _inputData);
   console.log(_classPrivateFieldGet(this, _inputData));
 }
 
@@ -476,7 +492,7 @@ function _sumOperatorHandler2() {
 
   _classPrivateFieldGet(this, _inputDataArray).push(_classPrivateFieldGet(this, _calculationRezult));
 
-  this.display.textContent = _classPrivateFieldGet(this, _calculationRezult);
+  _classPrivateMethodGet(this, _formatResult, _formatResult2).call(this, _classPrivateFieldGet(this, _calculationRezult));
 
   _classPrivateFieldSet(this, _calculationRezult, 0);
 }
@@ -488,7 +504,7 @@ function _minusOperatorHandler2() {
 
   _classPrivateFieldGet(this, _inputDataArray).push(_classPrivateFieldGet(this, _calculationRezult));
 
-  this.display.textContent = _classPrivateFieldGet(this, _calculationRezult);
+  _classPrivateMethodGet(this, _formatResult, _formatResult2).call(this, _classPrivateFieldGet(this, _calculationRezult));
 
   _classPrivateFieldSet(this, _calculationRezult, 0);
 }
@@ -520,14 +536,14 @@ function _multiplyOperatorHandler2() {
 
   _classPrivateFieldGet(this, _inputDataArray).push(_classPrivateFieldGet(this, _calculationRezult));
 
-  this.display.textContent = _classPrivateFieldGet(this, _calculationRezult);
+  _classPrivateMethodGet(this, _formatResult, _formatResult2).call(this, _classPrivateFieldGet(this, _calculationRezult));
 
   _classPrivateFieldSet(this, _calculationRezult, 0);
 }
 
 function _divideOperatorHandler2() {
   if (_classPrivateFieldGet(this, _inputDataArray)[1] === 0) {
-    this.display.textContent = 'Divide by zero!';
+    _classPrivateFieldGet(this, _display).textContent = 'Divide by zero!';
 
     _classPrivateMethodGet(this, _clearAfterCalculate, _clearAfterCalculate2).call(this);
   } else {
@@ -537,7 +553,7 @@ function _divideOperatorHandler2() {
 
     _classPrivateFieldGet(this, _inputDataArray).push(_classPrivateFieldGet(this, _calculationRezult));
 
-    this.display.textContent = _classPrivateFieldGet(this, _calculationRezult);
+    _classPrivateMethodGet(this, _formatResult, _formatResult2).call(this, _classPrivateFieldGet(this, _calculationRezult));
 
     _classPrivateFieldSet(this, _calculationRezult, 0);
   }
@@ -672,9 +688,8 @@ function _divideOperatorsInputHandler2() {
 
   _classPrivateFieldGet(this, _inputDataArray).push(Number(_classPrivateFieldGet(this, _inputData)));
 
-  _classPrivateFieldSet(this, _inputData, []);
+  _classPrivateFieldSet(this, _inputData, []); // console.log(this.#isMinusButton);
 
-  console.log(_classPrivateFieldGet(this, _isMinusButton));
 
   if (_classPrivateFieldGet(this, _operatorSymbolPressedCount) > 1) {
     if (!_classPrivateFieldGet(this, _isSumButton) && !_classPrivateFieldGet(this, _isMinusButton) && !_classPrivateFieldGet(this, _isMutiplyButton)) {
@@ -751,16 +766,13 @@ myCalculator.start();
 /*!*****************************************!*\
   !*** ./src/view/calculator-template.js ***!
   \*****************************************/
-/*! exports provided: CalculatorView, calculatorTemplate, createElement */
+/*! exports provided: calculatorTemplate, createElement */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CalculatorView", function() { return CalculatorView; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "calculatorTemplate", function() { return calculatorTemplate; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createElement", function() { return createElement; });
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 var calculatorTemplate = function calculatorTemplate() {
   return "\n    <section class=\"calculator\">\n      <div class=\"calculator__subdisplay\" aria-label=\"\u0434\u0438\u0441\u043F\u043B\u0435\u0439\"></div>\n      <div class=\"calculator__display\" aria-label=\"\u0434\u0438\u0441\u043F\u043B\u0435\u0439\"></div>\n      <div class=\"calculator__buttons\">\n        <button class=\"calculator__button calculator__button--giper\" type=\"button\">1/x</button>\n        <button class=\"calculator__button calculator__button--power2\" type=\"button\">x<sup>2</sup></button>\n        <button class=\"calculator__button calculator__button--clear\" type=\"button\">\u0421</button>\n        <button class=\"calculator__button calculator__button--backspace\" type=\"button\">&larr;</button>\n        <button class=\"calculator__button calculator__button--number calculator__button--7\" type=\"button\">7</button>\n        <button class=\"calculator__button calculator__button--number calculator__button--8\" type=\"button\">8</button>\n        <button class=\"calculator__button calculator__button--number calculator__button--9\" type=\"button\">9</button>\n        <button class=\"calculator__button calculator__button--divide\" type=\"button\">/</button>\n        <button class=\"calculator__button calculator__button--number calculator__button--4\" type=\"button\">4</button>\n        <button class=\"calculator__button calculator__button--number calculator__button--5\" type=\"button\">5</button>\n        <button class=\"calculator__button calculator__button--number calculator__button--6\" type=\"button\">6</button>\n        <button class=\"calculator__button calculator__button--multiply\" type=\"button\">&times;</button>\n        <button class=\"calculator__button calculator__button--number calculator__button--1\" type=\"button\">1</button>\n        <button class=\"calculator__button calculator__button--number calculator__button--2\" type=\"button\">2</button>\n        <button class=\"calculator__button calculator__button--number calculator__button--3\" type=\"button\">3</button>\n        <button class=\"calculator__button calculator__button--minus\" type=\"button\">&minus;</button>\n        <button class=\"calculator__button calculator__button--dot\" type=\"button\">.</button>\n        <button class=\"calculator__button calculator__button--number calculator__button--0\" type=\"button\">0</button>\n        <button class=\"calculator__button calculator__button--calculate\" type=\"button\">=</button>\n        <button class=\"calculator__button calculator__button--sum\" type=\"button\">+</button>\n      </div>\n    </section>\n  ";
 };
@@ -770,18 +782,6 @@ var createElement = function createElement(template) {
   newElement.innerHTML = template;
   return newElement.firstElementChild;
 };
-
-var _getTemplate = new WeakSet();
-
-var CalculatorView = function CalculatorView() {
-  _classCallCheck(this, CalculatorView);
-
-  _getTemplate.add(this);
-};
-
-function _getTemplate2() {
-  return calculatorTemplate();
-}
 
 
 
